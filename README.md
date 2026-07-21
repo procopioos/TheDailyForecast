@@ -1,6 +1,8 @@
 # The Daily Forecast
 
 A minimal weather app for macOS that displays current conditions in a clean, widget-like window.
+> [!NOTE]
+> App in DEEP development. Full functionality not yet implemented.
 
 Built with SwiftUI. Weather data from [Open-Meteo](https://open-meteo.com).
 
