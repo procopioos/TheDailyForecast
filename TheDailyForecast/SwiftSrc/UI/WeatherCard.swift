@@ -6,6 +6,7 @@ struct WeatherCard: View {
     @State private var showSettings = false
     @State private var clockTimer: Timer?
     @ObservedObject private var locationService = LocationService.shared
+    @ObservedObject private var settingMan = SettingMan.shared
 
     private let timeFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -15,6 +16,18 @@ struct WeatherCard: View {
 
     private var condition: WeatherCondition {
         weatherData?.condition ?? .sunny
+    }
+
+    private var displayTemperature: Int {
+        guard let temp = weatherData?.temperature else { return 0 }
+        switch settingMan.config.temperatureUnit {
+        case .celsius: return Int(temp)
+        case .fahrenheit: return Int(temp * 9 / 5 + 32)
+        }
+    }
+
+    private var tempUnitSymbol: String {
+        settingMan.config.temperatureUnit.symbol
     }
 
     private var timeString: String {
@@ -52,7 +65,7 @@ struct WeatherCard: View {
 
                 Spacer()
 
-                Text("\(Int(weatherData?.temperature ?? 0))°")
+                Text("\(displayTemperature)°")
                     .font(.custom("InstrumentSerif-Regular", size: 90))
                     .foregroundStyle(condition.textColor)
 

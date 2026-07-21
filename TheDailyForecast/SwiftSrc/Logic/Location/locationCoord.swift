@@ -21,7 +21,7 @@ class LocationService: ObservableObject {
 
     init() {
         Task {
-            await updateLocation("Parigi")
+            await updateLocation(SettingMan.shared.config.city)
         }
     }
 
