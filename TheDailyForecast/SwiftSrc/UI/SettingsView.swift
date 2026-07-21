@@ -3,8 +3,12 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var settingMan = SettingMan.shared
-    @State private var cityInput: String = ""
+    @State private var searchText: String = ""
+    @State private var searchResults: [CityResult] = []
+    @State private var selectedCity: CityResult?
     @State private var selectedUnit: TemperatureUnit = .celsius
+    @State private var searchTask: Task<Void, Never>?
+    @State private var isSelecting = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -22,16 +26,68 @@ struct SettingsView: View {
                     Text("City")
                         .font(.custom("JetBrainsMono-Regular", size: 12))
                         .foregroundStyle(.white.opacity(0.7))
-                    TextField("Enter city name", text: $cityInput)
-                        .textFieldStyle(.plain)
-                        .font(.custom("JetBrainsMono-Regular", size: 14))
-                        .foregroundStyle(.white)
-                        .padding(8)
-                        .background {
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(.white.opacity(0.15))
+
+                    ZStack(alignment: .topLeading) {
+                        TextField("Search city (in English)...", text: $searchText)
+                            .textFieldStyle(.plain)
+                            .font(.custom("JetBrainsMono-Regular", size: 14))
+                            .foregroundStyle(.white)
+                            .padding(8)
+                            .background {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(.white.opacity(0.15))
+                            }
+                            .onChange(of: searchText) { _, newValue in
+                                guard !isSelecting else {
+                                    isSelecting = false
+                                    return
+                                }
+                                onSearchTextChanged(newValue)
+                            }
+
+                        if !searchResults.isEmpty {
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    ForEach(searchResults) { city in
+                                        Button {
+                                            selectCity(city)
+                                        } label: {
+                                            HStack {
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text(city.name)
+                                                        .font(.custom("JetBrainsMono-Regular", size: 13))
+                                                        .foregroundStyle(.white)
+                                                    Text(city.displayName)
+                                                        .font(.custom("JetBrainsMono-Regular", size: 10))
+                                                        .foregroundStyle(.white.opacity(0.5))
+                                                }
+                                                Spacer()
+                                            }
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 6)
+                                            .contentShape(Rectangle())
+                                        }
+                                        .buttonStyle(.plain)
+
+                                        if city.id != searchResults.last?.id {
+                                            Divider()
+                                                .background(.white.opacity(0.1))
+                                        }
+                                    }
+                                }
+                            }
+                            .frame(maxHeight: 200)
+                            .background {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(.black.opacity(0.85))
+                            }
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(.white.opacity(0.15), lineWidth: 1)
+                            }
+                            .padding(.top, 34)
                         }
-                        .onSubmit { applyChanges() }
+                    }
                 }
 
                 VStack(alignment: .leading, spacing: 6) {
@@ -56,8 +112,11 @@ struct SettingsView: View {
             HStack {
                 Button {
                     settingMan.resetToDefaults()
-                    cityInput = settingMan.config.city
+                    isSelecting = true
+                    searchText = settingMan.config.city
+                    selectedCity = nil
                     selectedUnit = settingMan.config.temperatureUnit
+                    searchResults = []
                     applyChanges()
                 } label: {
                     Text("Reset")
@@ -81,19 +140,55 @@ struct SettingsView: View {
             .padding(.horizontal, 18)
             .padding(.bottom, 18)
         }
-        .frame(width: 400, height: 300)
+        .frame(width: 400, height: 350)
         .onAppear {
-            cityInput = settingMan.config.city
+            isSelecting = true
+            searchText = settingMan.config.city
             selectedUnit = settingMan.config.temperatureUnit
+        }
+        .onDisappear {
+            searchTask?.cancel()
         }
     }
 
+    private func onSearchTextChanged(_ query: String) {
+        searchTask?.cancel()
+        selectedCity = nil
+
+        guard query.count >= 3 else {
+            searchResults = []
+            return
+        }
+
+        searchTask = Task {
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            searchResults = await CitySearchService.shared.search(query: query)
+        }
+    }
+
+    private func selectCity(_ city: CityResult) {
+        selectedCity = city
+        isSelecting = true
+        searchText = city.displayName
+        searchResults = []
+        applyChanges()
+    }
+
     private func applyChanges() {
-        let trimmed = cityInput.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return }
-        settingMan.config.city = trimmed
+        let name = selectedCity?.name ?? searchText.trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty else { return }
+        if let city = selectedCity {
+            settingMan.config.city = city.displayName
+        } else {
+            settingMan.config.city = name
+        }
         Task {
-            await WeatherService.shared.updateLocation(trimmed)
+            if let city = selectedCity {
+                await WeatherService.shared.updateLocation(city.name, latitude: city.latitude, longitude: city.longitude, country: city.country)
+            } else {
+                await WeatherService.shared.updateLocation(name)
+            }
         }
     }
 }

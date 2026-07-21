@@ -41,4 +41,14 @@ class LocationService: ObservableObject {
             print("Geocoding failed: \(error.localizedDescription)")
         }
     }
+
+    func updateLocation(name: String, latitude: Double, longitude: Double, country: String = "") async {
+        await MainActor.run {
+            self.latitude = latitude
+            self.longitude = longitude
+            self.locationName = name
+            self.country = country
+        }
+        print("Location set directly! \(latitude), \(longitude): \(name), \(country)")
+    }
 }

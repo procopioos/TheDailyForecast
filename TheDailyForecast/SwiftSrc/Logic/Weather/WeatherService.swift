@@ -64,6 +64,11 @@ class WeatherService: ObservableObject {
         await refresh()
     }
 
+    func updateLocation(_ name: String, latitude: Double, longitude: Double, country: String = "") async {
+        await LocationService.shared.updateLocation(name: name, latitude: latitude, longitude: longitude, country: country)
+        await refresh()
+    }
+
     @MainActor
     private func refresh() {
         Task {
