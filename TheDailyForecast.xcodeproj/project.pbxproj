@@ -263,7 +263,7 @@
 		000000000000000111000000 /* Debug configuration for PBXNativeTarget "TheDailyForecast" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = TheDailyForecastIcons;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TheDailyForecastIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = TheDailyForecast/TheDailyForecast.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -309,7 +309,7 @@
 		000000000000000112000000 /* Release configuration for PBXNativeTarget "TheDailyForecast" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = TheDailyForecastIcons;
+				ASSETCATALOG_COMPILER_APPICON_NAME = TheDailyForecastIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = TheDailyForecast/TheDailyForecast.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
