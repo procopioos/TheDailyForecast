@@ -4,6 +4,7 @@ struct WeatherCard: View {
     var weatherData: WeatherData?
     @State private var now = Date()
     @State private var showSettings = false
+    @ObservedObject private var locationService = LocationService.shared
 
     private var condition: WeatherCondition {
         weatherData?.condition ?? .sunny
@@ -36,11 +37,11 @@ struct WeatherCard: View {
                     .font(.custom("JetBrainsMono-Regular", size: 16))
                     .foregroundStyle(condition.secondaryTextColor)
                 
-                Text("London")
+                Text(locationService.locationName ?? "")
                     .font(.custom("InstrumentSerif-Italic", size: 48))
                     .foregroundStyle(condition.textColor)
 
-                Text("United Kingdom")
+                Text(locationService.country ?? "")
                     .font(.custom("JetBrainsMono-Regular", size: 16))
                     .foregroundStyle(condition.secondaryTextColor)
                     .padding(.top, 0.1)

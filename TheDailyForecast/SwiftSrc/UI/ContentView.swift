@@ -13,9 +13,6 @@ struct ContentView: View {
         .onAppear {
             weatherService.startAutoRefresh()
         }
-        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { _ in
-            NSApplication.shared.terminate(nil)
-        }
     }
 }
 

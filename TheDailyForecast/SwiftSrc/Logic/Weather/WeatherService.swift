@@ -7,15 +7,16 @@ class WeatherService: ObservableObject {
     @Published var currentWeather: WeatherData?
 
     private let baseURL = "https://api.open-meteo.com/v1/forecast"
-    private let latitude = 51.5074
-    private let longitude = -0.1278
     private var timer: Timer?
+    private var locationCancellable: AnyCancellable?
 
     private var apiURL: URL? {
+        guard let lat = LocationService.shared.latitude,
+              let lon = LocationService.shared.longitude else { return nil }
         var components = URLComponents(string: baseURL)
         components?.queryItems = [
-            URLQueryItem(name: "latitude", value: String(latitude)),
-            URLQueryItem(name: "longitude", value: String(longitude)),
+            URLQueryItem(name: "latitude", value: String(lat)),
+            URLQueryItem(name: "longitude", value: String(lon)),
             URLQueryItem(name: "current", value: "temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code"),
             URLQueryItem(name: "hourly", value: "uv_index"),
             URLQueryItem(name: "timezone", value: "auto")
@@ -45,6 +46,7 @@ class WeatherService: ObservableObject {
 
     func startAutoRefresh(interval: TimeInterval = 300) {
         stopAutoRefresh()
+        observeLocation()
         Task {
             await refresh()
         }
@@ -60,6 +62,11 @@ class WeatherService: ObservableObject {
         timer = nil
     }
 
+    func updateLocation(_ name: String) async {
+        await LocationService.shared.updateLocation(name)
+        await refresh()
+    }
+
     @MainActor
     private func refresh() {
         Task {
@@ -69,6 +76,15 @@ class WeatherService: ObservableObject {
                 print("Weather fetch failed: \(error.localizedDescription)")
             }
         }
+    }
+
+    private func observeLocation() {
+        locationCancellable = LocationService.shared.$latitude
+            .combineLatest(LocationService.shared.$longitude)
+            .sink { [weak self] lat, lon in
+                guard lat != nil, lon != nil else { return }
+                Task { await self?.refresh() }
+            }
     }
 
     private func findCurrentUVIndex(response: OpenMeteoResponse, currentTime: String) -> Double {
