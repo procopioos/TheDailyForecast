@@ -4,16 +4,21 @@ struct WeatherCard: View {
     var weatherData: WeatherData?
     @State private var now = Date()
     @State private var showSettings = false
+    @State private var clockTimer: Timer?
     @ObservedObject private var locationService = LocationService.shared
+
+    private let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        return f
+    }()
 
     private var condition: WeatherCondition {
         weatherData?.condition ?? .sunny
     }
-    
+
     private var timeString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: now)
+        timeFormatter.string(from: now)
     }
 
     var body: some View {
@@ -32,11 +37,11 @@ struct WeatherCard: View {
                     .padding(.bottom, 8)
 
                 Spacer()
-                    
+
                 Text(timeString)
                     .font(.custom("JetBrainsMono-Regular", size: 16))
                     .foregroundStyle(condition.secondaryTextColor)
-                
+
                 Text(locationService.locationName ?? "")
                     .font(.custom("InstrumentSerif-Italic", size: 48))
                     .foregroundStyle(condition.textColor)
@@ -44,7 +49,6 @@ struct WeatherCard: View {
                 Text(locationService.country ?? "")
                     .font(.custom("JetBrainsMono-Regular", size: 16))
                     .foregroundStyle(condition.secondaryTextColor)
-                    .padding(.top, 0.1)
 
                 Spacer()
 
@@ -102,9 +106,12 @@ struct WeatherCard: View {
             .padding(.trailing, 48)
         }
         .onAppear {
-            Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            clockTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
                 now = Date()
             }
+        }
+        .onDisappear {
+            clockTimer?.invalidate()
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()

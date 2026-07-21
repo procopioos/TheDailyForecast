@@ -47,9 +47,6 @@ class WeatherService: ObservableObject {
     func startAutoRefresh(interval: TimeInterval = 300) {
         stopAutoRefresh()
         observeLocation()
-        Task {
-            await refresh()
-        }
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             Task {
                 await self?.refresh()
