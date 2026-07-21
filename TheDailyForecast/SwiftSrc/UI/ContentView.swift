@@ -1,14 +1,20 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var condition: WeatherCondition = .sunny
+    @StateObject private var weatherService = WeatherService.shared
 
     var body: some View {
         ZStack {
             Color(nsColor: .windowBackgroundColor)
                 .ignoresSafeArea()
 
-            WeatherCard(condition: $condition)
+            WeatherCard(weatherData: weatherService.currentWeather)
+        }
+        .onAppear {
+            weatherService.startAutoRefresh()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.willCloseNotification)) { _ in
+            NSApplication.shared.terminate(nil)
         }
     }
 }

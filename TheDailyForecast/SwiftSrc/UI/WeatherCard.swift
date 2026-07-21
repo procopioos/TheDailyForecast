@@ -1,9 +1,13 @@
 import SwiftUI
 
 struct WeatherCard: View {
-    @Binding var condition: WeatherCondition
+    var weatherData: WeatherData?
     @State private var now = Date()
     @State private var showSettings = false
+
+    private var condition: WeatherCondition {
+        weatherData?.condition ?? .sunny
+    }
     
     private var timeString: String {
         let formatter = DateFormatter()
@@ -19,27 +23,12 @@ struct WeatherCard: View {
                 .frame(width: 800, height: 600)
                 .shadow(radius: 5)
 
-
-
             VStack(alignment: .leading, spacing: 0) {
                 
-                HStack(alignment: .center) {
-                    Text("The Daily Forecast")
-                        .font(.custom("InstrumentSerif-Italic", size: 32))
-                        .foregroundStyle(condition.textColor)
-
-                    Spacer()
-
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                            .font(.system(size: 16))
-                            .foregroundStyle(condition.secondaryTextColor)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding(.bottom, 8)
+                Text("The Daily Forecast")
+                    .font(.custom("InstrumentSerif-Italic", size: 32))
+                    .foregroundStyle(condition.textColor)
+                    .padding(.bottom, 8)
 
                 Spacer()
                     
@@ -58,34 +47,58 @@ struct WeatherCard: View {
 
                 Spacer()
 
-                Text("18°")
+                Text("\(Int(weatherData?.temperature ?? 0))°")
                     .font(.custom("InstrumentSerif-Regular", size: 90))
                     .foregroundStyle(condition.textColor)
 
                 Spacer()
-
                 VStack(alignment: .leading, spacing: 6) {
-                    Label("12 km/h", systemImage: "wind")
+                    Label("\(Int(weatherData?.windSpeed ?? 0)) km/h", systemImage: "wind")
                         .font(.custom("JetBrainsMono-Italic", size: 12))
-                    Label("UV 5", systemImage: "sun.max.fill")
+                        .foregroundStyle(condition.textColor)
+                    Label("UV \(Int(weatherData?.uvIndex ?? 0))", systemImage: "sun.max.fill")
                         .font(.custom("JetBrainsMono-Italic", size: 12))
-                    Label("64%", systemImage: "humidity.fill")
+                        .foregroundStyle(condition.textColor)
+                    Label("\(weatherData?.humidity ?? 0)%", systemImage: "humidity.fill")
                         .font(.custom("JetBrainsMono-Italic", size: 12))
+                        .foregroundStyle(condition.textColor)
                 }
-                .font(.callout)
-                .foregroundStyle(condition.secondaryTextColor)
 
                 Spacer()
             }
             .padding(32)
             .frame(width: 600, height: 400, alignment: .leading)
-            .onTapGesture {
-                withAnimation {
-                    let all = WeatherCondition.allCases
-                    guard let idx = all.firstIndex(of: condition) else { return }
-                    condition = all[(idx + 1) % all.count]
+
+            VStack {
+                Button {
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gearshape.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(condition.secondaryTextColor)
                 }
+                .buttonStyle(.plain)
+                .padding(.top, 32)
+
+                Spacer()
+
+                Button {
+                    print("Sunny Placeholder!")
+                } label: {
+                    Image(systemName: "sun.max.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(condition.secondaryTextColor)
+                        .padding(10)
+                        .background {
+                            Circle()
+                                .fill(.white.opacity(0.2))
+                        }
+                }
+                .buttonStyle(.plain)
+                .padding(.bottom, 32)
             }
+            .frame(width: 800, height: 600, alignment: .trailing)
+            .padding(.trailing, 48)
         }
         .onAppear {
             Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in

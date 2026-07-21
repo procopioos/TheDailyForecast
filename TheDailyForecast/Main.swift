@@ -1,5 +1,6 @@
 // The Daily Forecast
 // @procopioos
+
 import SwiftUI
 
 @main struct Main: App {
@@ -10,5 +11,6 @@ import SwiftUI
                 .frame(width: 900, height: 700)
         }
         .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
     }
 }
