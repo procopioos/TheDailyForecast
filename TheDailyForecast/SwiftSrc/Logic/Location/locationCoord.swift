@@ -2,7 +2,7 @@
 //  locationCoord.swift
 //  TheDailyForecast
 //
-//  Created by Simone Procopio on 21/07/2026.
+//  Created by @procopioos on 21/07/2026.
 //
 
 import Foundation
