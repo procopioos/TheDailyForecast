@@ -27,6 +27,16 @@ enum WeatherCondition: CaseIterable {
         }
     }
 
+    var panelColor: Color {
+        switch self {
+        case .sunny:  return .cyan
+        case .cloudy: return .gray
+        case .rainy:  return .indigo
+        case .snowy:  return .cyan
+        case .stormy: return .indigo
+        }
+    }
+
     var name: String {
         switch self {
         case .sunny:  return "Sunny"

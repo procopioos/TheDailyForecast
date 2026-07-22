@@ -46,7 +46,7 @@ struct WeatherCard: View {
             VStack(alignment: .leading, spacing: 0) {
                 
                 Text("The Daily Forecast")
-                    .font(.custom("InstrumentSerif-Italic", size: 32))
+                    .font(.custom("Lastik", size: 32))
                     .foregroundStyle(condition.textColor)
                     .padding(.bottom, 8)
 

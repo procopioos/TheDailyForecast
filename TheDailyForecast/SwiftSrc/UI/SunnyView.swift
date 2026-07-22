@@ -22,7 +22,12 @@ struct SunnyView: View {
                 inputBar
             }
             .frame(width: 320, height: 550)
-            .background(.black)
+            .background {
+                ZStack {
+                    Rectangle().fill(.ultraThinMaterial)
+                    condition.panelColor.opacity(0.4)
+                }
+            }
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.horizontal, 24)
             .shadow(radius: 5)
@@ -37,7 +42,7 @@ struct SunnyView: View {
     private var header: some View {
         HStack {
             Text("Sunny")
-                .font(.custom("InstrumentSerif-Italic", size: 20))
+                .font(.custom("Lastik", size: 20))
                 .foregroundStyle(.white)
 
             Spacer()
@@ -123,7 +128,7 @@ struct SunnyView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(message.role == .user
                             ? AnyShapeStyle(.white.opacity(0.15))
-                            : AnyShapeStyle(condition.textColor.opacity(0.1)))
+                            : AnyShapeStyle(condition.panelColor.opacity(0.15)))
                 }
 
             if message.role == .assistant { Spacer(minLength: 40) }
@@ -153,7 +158,12 @@ struct SunnyView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(.black.opacity(0.3))
+        .background {
+            ZStack {
+                Rectangle().fill(.ultraThinMaterial)
+                condition.panelColor.opacity(0.2)
+            }
+        }
     }
 
     private func sendMessage() {
