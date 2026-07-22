@@ -42,7 +42,7 @@ struct SunnyView: View {
     private var header: some View {
         HStack {
             Text("Sunny")
-                .font(.custom("Lastik", size: 20))
+                .font(.custom("Lastik", size: 16))
                 .foregroundStyle(.white)
 
             Spacer()
@@ -129,6 +129,10 @@ struct SunnyView: View {
                         .fill(message.role == .user
                             ? AnyShapeStyle(.white.opacity(0.15))
                             : AnyShapeStyle(condition.panelColor.opacity(0.15)))
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.white.opacity(0.08))
                 }
 
             if message.role == .assistant { Spacer(minLength: 40) }
