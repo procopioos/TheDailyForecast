@@ -354,9 +354,9 @@ LLM response failures are caught and replaced with a fallback message: *"Sorry, 
             │                     │
             ▼                     ▼
   ┌──────────────────┐  ┌──────────────────────┐
-  │  CLGeocoder      │  │  Photon API           │
-  │  (fallback)      │  │  (city search)        │
-  │                  │  │  photon.komoot.io     │
+  │  CLGeocoder      │  │  Photon API          │
+  │  (fallback)      │  │  (city search)       │
+  │                  │  │  photon.komoot.io    │
   └────────┬─────────┘  └──────────┬───────────┘
            │                       │
            └───────────┬───────────┘
