@@ -4,6 +4,7 @@ struct WeatherCard: View {
     var weatherData: WeatherData?
     @State private var now = Date()
     @State private var showSettings = false
+    @State private var showSunny = false
     @State private var clockTimer: Timer?
     @ObservedObject private var locationService = LocationService.shared
     @ObservedObject private var settingMan = SettingMan.shared
@@ -100,20 +101,22 @@ struct WeatherCard: View {
 
                 Spacer()
 
-                Button {
-                    print("Sunny Placeholder!")
-                } label: {
-                    Image(systemName: "sun.max.fill")
-                        .font(.system(size: 24))
-                        .foregroundStyle(condition.secondaryTextColor)
-                        .padding(10)
-                        .background {
-                            Circle()
-                                .fill(.white.opacity(0.2))
-                        }
+                if #available(macOS 26.0, *) {
+                    Button {
+                        showSunny.toggle()
+                    } label: {
+                        Image(systemName: "sun.max.fill")
+                            .font(.system(size: 24))
+                            .foregroundStyle(condition.secondaryTextColor)
+                            .padding(10)
+                            .background {
+                                Circle()
+                                    .fill(.white.opacity(0.2))
+                            }
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.bottom, 32)
                 }
-                .buttonStyle(.plain)
-                .padding(.bottom, 32)
             }
             .frame(width: 800, height: 600, alignment: .trailing)
             .padding(.trailing, 48)
@@ -128,6 +131,18 @@ struct WeatherCard: View {
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
+        }
+        .overlay {
+            if #available(macOS 26.0, *), showSunny {
+                SunnyView(
+                    weatherData: weatherData,
+                    locationName: locationService.locationName,
+                    condition: condition,
+                    onDismiss: { showSunny = false }
+                )
+                .transition(.move(edge: .trailing).combined(with: .opacity))
+                .animation(.easeOut(duration: 0.25), value: showSunny)
+            }
         }
     }
 }

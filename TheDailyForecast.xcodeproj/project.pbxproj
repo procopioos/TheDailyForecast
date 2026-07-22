@@ -6,6 +6,11 @@
 	objectVersion = 90;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FC68AD5030110DD800B5FFFB /* LocalLLMClient in Frameworks */ = {isa = PBXBuildFile; productRef = FC68AD4F30110DD800B5FFFB /* LocalLLMClient */; };
+		FC68AD5230110DD800B5FFFB /* LocalLLMClientFoundationModels in Frameworks */ = {isa = PBXBuildFile; productRef = FC68AD5130110DD800B5FFFB /* LocalLLMClientFoundationModels */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* The Daily Forecast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Daily Forecast.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -35,6 +40,8 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				FC68AD5230110DD800B5FFFB /* LocalLLMClientFoundationModels in Frameworks */,
+				FC68AD5030110DD800B5FFFB /* LocalLLMClient in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -73,6 +80,10 @@
 				000000000000000000000010 /* TheDailyForecast */,
 			);
 			name = TheDailyForecast;
+			packageProductDependencies = (
+				FC68AD4F30110DD800B5FFFB /* LocalLLMClient */,
+				FC68AD5130110DD800B5FFFB /* LocalLLMClientFoundationModels */,
+			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* The Daily Forecast.app */;
 			productType = "com.apple.product-type.application";
@@ -101,6 +112,9 @@
 			);
 			mainGroup = 000000000000000000000001;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				FC68AD4E30110DD800B5FFFB /* XCRemoteSwiftPackageReference "LocalLLMClient" */,
+			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
 			projectDirPath = "";
@@ -372,6 +386,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FC68AD4E30110DD800B5FFFB /* XCRemoteSwiftPackageReference "LocalLLMClient" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tattn/LocalLLMClient.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FC68AD4F30110DD800B5FFFB /* LocalLLMClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FC68AD4E30110DD800B5FFFB /* XCRemoteSwiftPackageReference "LocalLLMClient" */;
+			productName = LocalLLMClient;
+		};
+		FC68AD5130110DD800B5FFFB /* LocalLLMClientFoundationModels */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FC68AD4E30110DD800B5FFFB /* XCRemoteSwiftPackageReference "LocalLLMClient" */;
+			productName = LocalLLMClientFoundationModels;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 000000000000000000000000 /* Project object */;
 }
