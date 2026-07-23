@@ -38,3 +38,5 @@ Contributions are welcome! Please check the [contribution guide](Documentation/C
 ## Author
 
 [@procopioos](https://github.com/procopioos) — Simone Procopio
+
+<sub>Project under MIT license</sub>
