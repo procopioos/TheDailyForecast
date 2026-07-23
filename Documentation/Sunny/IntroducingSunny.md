@@ -1,4 +1,4 @@
-# Introducing Sunny
+# Meet Sunny
 
 *Your personal weather companion, right inside the forecast.*
 
