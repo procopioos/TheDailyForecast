@@ -119,7 +119,7 @@ struct SunnyView: View {
         HStack {
             if message.role == .user { Spacer(minLength: 40) }
 
-            Text(message.content)
+            markdownText(message.content)
                 .font(.custom("JetBrainsMono-Regular", size: 12))
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10)
@@ -137,6 +137,49 @@ struct SunnyView: View {
 
             if message.role == .assistant { Spacer(minLength: 40) }
         }
+    }
+
+    private func markdownText(_ text: String) -> Text {
+        let segments = parseBoldMarkdown(text)
+        var result = Text("")
+        for segment in segments {
+            if segment.isBold {
+                result = result + Text(segment.text).bold()
+            } else {
+                result = result + Text(segment.text)
+            }
+        }
+        return result
+    }
+
+    private func parseBoldMarkdown(_ text: String) -> [MarkdownSegment] {
+        var segments: [MarkdownSegment] = []
+        var remaining = text
+
+        while let boldRange = remaining.range(of: "**") {
+            let before = String(remaining[remaining.startIndex..<boldRange.lowerBound])
+            if !before.isEmpty {
+                segments.append(MarkdownSegment(text: before, isBold: false))
+            }
+
+            let afterFirstBold = String(remaining[boldRange.upperBound...])
+            if let endBoldRange = afterFirstBold.range(of: "**") {
+                let boldText = String(afterFirstBold[afterFirstBold.startIndex..<endBoldRange.lowerBound])
+                if !boldText.isEmpty {
+                    segments.append(MarkdownSegment(text: boldText, isBold: true))
+                }
+                remaining = String(afterFirstBold[endBoldRange.upperBound...])
+            } else {
+                segments.append(MarkdownSegment(text: "**\(afterFirstBold)", isBold: false))
+                remaining = ""
+            }
+        }
+
+        if !remaining.isEmpty {
+            segments.append(MarkdownSegment(text: remaining, isBold: false))
+        }
+
+        return segments
     }
 
     private var inputBar: some View {
@@ -178,6 +221,13 @@ struct SunnyView: View {
             await sunnyService.send(message: text, weather: weatherData, locationName: locationName)
         }
     }
+}
+
+@available(macOS 26.0, *)
+private struct MarkdownSegment: Identifiable {
+    let id = UUID()
+    let text: String
+    let isBold: Bool
 }
 
 @available(macOS 26.0, *)
