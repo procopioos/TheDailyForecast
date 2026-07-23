@@ -1,4 +1,4 @@
-# Sunny AI
+# Introducing Sunny
 
 On-device AI chat assistant built into The Daily Forecast.
 
