@@ -2,6 +2,7 @@
   <img src="Documentation/Assets/TheDailyForecastIcon.png" width="25">
   The Daily Forecast
 </h1>
+
 *Your forecast, now beautifully open-sourced.*
 
 A clean, minimal weather app for macOS that puts your forecast front and center.
