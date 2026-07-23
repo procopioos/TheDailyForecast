@@ -92,16 +92,11 @@ class WeatherService: ObservableObject {
     private func findCurrentUVIndex(response: OpenMeteoResponse, currentTime: String) -> Double {
         guard let hourly = response.hourly else { return 0 }
 
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withDashSeparatorInDate, .withColonSeparatorInTime]
-
-        guard let currentISO = formatter.date(from: currentTime) else { return 0 }
+        let currentHour = currentTime.prefix(13)
 
         for (index, timeString) in hourly.time.prefix(hourly.uvIndex.count).enumerated() {
-            guard index < hourly.uvIndex.count,
-                  let hourISO = formatter.date(from: timeString) else { continue }
-
-            if Calendar.current.isDate(currentISO, equalTo: hourISO, toGranularity: .hour) {
+            guard index < hourly.uvIndex.count else { break }
+            if timeString.prefix(13) == currentHour {
                 return hourly.uvIndex[index]
             }
         }
