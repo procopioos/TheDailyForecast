@@ -23,7 +23,7 @@ A clean, minimal weather app for macOS that puts your forecast front and center.
 3. That's it — enjoy your forecast
 
 Requires **macOS 14** (Sonoma) or later.  
-Sunny AI requires **macOS 26** (Tahoe) and Apple Silicon (M1 or later).
+**Sunny** requires **macOS 26** (Tahoe) and Apple Silicon (M1 or later).
 
 ---
 
