@@ -25,7 +25,7 @@ struct AppConfig: Codable {
     var temperatureUnit: TemperatureUnit
 
     static let `default` = AppConfig(
-        city: "Parigi",
+        city: "New York",
         temperatureUnit: .celsius
     )
 }

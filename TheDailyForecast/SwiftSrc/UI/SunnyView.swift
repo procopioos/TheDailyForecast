@@ -106,7 +106,7 @@ struct SunnyView: View {
             Image(systemName: "sun.max.fill")
                 .font(.system(size: 28))
                 .foregroundStyle(.yellow.opacity(0.6))
-            Text("Hi! I'm Sunny.\nAsk me anything about the weather.")
+            Text("Hi! I'm Sunny.\nAsk me about the weather.")
                 .font(.custom("JetBrainsMono-Regular", size: 12))
                 .foregroundStyle(.white.opacity(0.4))
                 .multilineTextAlignment(.center)
